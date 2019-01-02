@@ -89,16 +89,34 @@ const int offButtonPin = 3;     // the number of the pushbutton pin
 const int ledPin =  13;      // the number of the LED pin
 int onButtonState = 0;
 int offButtonState = 0;
+int lightState =0;
 
 unsigned long timer = 0;
 int count = 0;
 
+// servo 
+
+#include <Servo.h>
+
+const int servoPin = 9;
+Servo myservo;  // create servo object to control a servo
+// twelve servo objects can be created on most boards
+
+int pos = 0;    // variable to store the servo position
+
+
+
 void setup() {
 
   Serial.begin(9600); 
+
+  // led matrix
   m.init(); // MAX7219 initialization
   m.setIntensity(8); // initial led matrix intensity, 0-15
 
+
+// servo
+myservo.attach(servoPin);  // attaches the servo on pin 9 to the servo object
 
     
 
@@ -116,6 +134,9 @@ void setup() {
 void loop() {
   doDisplay();
   actOnButton();
+  if (lightState == 1) {
+    move();
+  }
 
 }
 
@@ -140,6 +161,19 @@ void doDisplay(){
   
 }
 
+void move(){
+  
+  for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
+  for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
+}
+
 void actOnButton() {
   onButtonState = digitalRead(onButtonPin);
   offButtonState = digitalRead(offButtonPin);
@@ -147,9 +181,11 @@ void actOnButton() {
   if (onButtonState == LOW) {
     // turn LED on:
     digitalWrite(ledPin, HIGH);
+    lightState = 1;
   } else if(offButtonState == LOW) {
     // turn LED off:
     digitalWrite(ledPin, LOW);
+    lightState = 0;
   }
 }
 
