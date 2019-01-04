@@ -13,8 +13,8 @@
 
 #include <MaxMatrix.h>
 
-int DIN = 12;   // DIN pin of MAX7219 module
-int CLK = 10;   // CLK pin of MAX7219 module
+int DIN = 10;   // DIN pin of MAX7219 module
+int CLK = 12;   // CLK pin of MAX7219 module
 int CS = 11;    // CS pin of MAX7219 module
 int maxInUse = 1;
 
@@ -83,10 +83,10 @@ char smile03[] = {8, 8,
 char *message[] = {B, O, B, smile01};
 
                  // constants won't change. They're used here to set pin numbers:
-const int onButtonPin = 2;     // the number of the pushbutton pin
-const int offButtonPin = 3;     // the number of the pushbutton pin
+const int onButtonPin = 3;     // the number of the pushbutton pin
+const int offButtonPin = 2;     // the number of the pushbutton pin
 
-const int ledPin =  9;      // the number of the LED pin
+const int ledPin =  4;      // the number of the LED pin
 int onButtonState = 0;
 int offButtonState = 0;
 int lightState =0;
@@ -122,7 +122,7 @@ void setup() {
   // LED on/off
   // initialize the LED pin as an output:
   pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, LOW);
+  digitalWrite(ledPin, HIGH);
   // initialize the pushbutton pin as an input:
   pinMode(onButtonPin, INPUT);
   pinMode(offButtonPin, INPUT);
@@ -181,11 +181,11 @@ void actOnButton() {
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if (onButtonState == LOW) {
     // turn LED on:
-    digitalWrite(ledPin, HIGH);
+    digitalWrite(ledPin, LOW); // LOW = on because I wired the LED wrong (to 5v instead of GND
     lightState = 1;
   } else if(offButtonState == LOW) {
     // turn LED off:
-    digitalWrite(ledPin, LOW);
+    digitalWrite(ledPin, HIGH);
     lightState = 0;
   }
 }
