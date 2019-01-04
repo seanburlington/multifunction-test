@@ -86,7 +86,7 @@ char *message[] = {B, O, B, smile01};
 const int onButtonPin = 2;     // the number of the pushbutton pin
 const int offButtonPin = 3;     // the number of the pushbutton pin
 
-const int ledPin =  13;      // the number of the LED pin
+const int ledPin =  9;      // the number of the LED pin
 int onButtonState = 0;
 int offButtonState = 0;
 int lightState =0;
@@ -98,7 +98,7 @@ int count = 0;
 
 #include <Servo.h>
 
-const int servoPin = 9;
+const int servoPin = 13 ;
 Servo myservo;  // create servo object to control a servo
 // twelve servo objects can be created on most boards
 
