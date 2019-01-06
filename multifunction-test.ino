@@ -102,13 +102,14 @@ const int servoPin = 13 ;
 Servo myservo;  // create servo object to control a servo
 // twelve servo objects can be created on most boards
 
-int pos = 0;    // variable to store the servo position
-
-
+int pos = 90;    // variable to store the servo position
+bool clockwise = true;
+unsigned long positionTimer = 0;
+const unsigned long moveInterval = 30; // move once per 30ms
 
 void setup() {
 
-  Serial.begin(9600); 
+ // Serial.begin(9600); 
 
   // led matrix
   m.init(); // MAX7219 initialization
@@ -133,10 +134,9 @@ void setup() {
 void loop() {
   doDisplay();
   actOnButton();
-  if (lightState == 1) {
-    move();
+  if (lightState == 1) {    
+      move();
   }
-
 }
 
 
@@ -147,10 +147,7 @@ void doDisplay(){
   }
 
   m.writeSprite(0, 0, message[count]);  
-  Serial.print(count);
-  Serial.print("\t");
-  Serial.print(timer);
-  Serial.print("\n");
+
 
   timer = millis();
   count ++;
@@ -161,18 +158,30 @@ void doDisplay(){
 }
 
 void move(){
- 
-myservo.attach(servoPin);  // attaches the servo on pin 9 to the servo object
-  for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(15);                       // waits 15ms for the servo to reach the position
+  if (millis() - positionTimer > moveInterval){ // only move once per period max 
+   
+  positionTimer = millis();
+  if (clockwise){
+    pos++;
+  } else {
+    pos --;
   }
-  for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-    myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(15);                       // waits 15ms for the servo to reach the position
+  if (pos == 160){
+    clockwise = false;
+  } 
+  if (pos == 0){
+    clockwise = true; 
   }
-  myservo.detach();
+ //  Serial.print(pos);
+ // Serial.print("\t");
+//  Serial.print(timer);
+//  Serial.print("\n");
+  myservo.attach(servoPin);  // attaches the servo on pin 9 to the servo object
+  myservo.write(pos); 
+ // myservo.detach();
+  } else {
+//    Serial.print("skip\n");
+  }
 }
 
 void actOnButton() {
@@ -187,41 +196,6 @@ void actOnButton() {
     // turn LED off:
     digitalWrite(ledPin, HIGH);
     lightState = 0;
+    myservo.detach();
   }
 }
-
-
-  /*
-  // Seting the LEDs On or Off at x,y or row,column position
-  m.setDot(6,2,true); 
-  delay(1000);
-  m.setDot(6,3,true);
-  delay(1000);
-  m.clear(); // Clears the display
-  for (int i=0; i<8; i++){
-    m.setDot(i,i,true);
-    delay(300);
-  }
-  m.clear();
-  // Displaying the character at x,y (upper left corner of the character)  
-  m.writeSprite(2, 0, A);
-  delay(1000);
-
-  m.writeSprite(2, 0, B);
-  delay(1000);
-
-  m.writeSprite(0, 0, smile01);
-  delay(1000);
-  
-  m.writeSprite(0, 0, smile02);
-  delay(1000);
-  
-  m.writeSprite(0, 0, smile03);
-  delay(1000);
-  
-  for (int i=0; i<8; i++){
-    m.shiftLeft(false,false);
-    delay(300);
-  }
-  m.clear();
-  */
